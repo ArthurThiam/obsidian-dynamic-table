@@ -1,12 +1,18 @@
 # obsidian-dynamic-table
 Dynamic table for Obsidian
 
-# Required Plugins
+# 1. Required Plugins
 - Dataview (make sure dataviewjs is enabled)
 - Metaedit
 - Buttons
 
-# Setup
+# 2. Setup
+1. Copy paste everything inside the "START OF DYNAMIC TABLE" and "END OF DYNAMIC TABLE" comments
+2. Define your user inputs (see explanations below)
+3. Enter and delete a random search (this will create a metadata field required for the table in your note. The table won't render before doing this step)
+4. Click the "All" button to initialize the button filter variable (this will write to the inline field below your table. Feel free to place this inline field anywhere in the note. The table won't render before doing this step)
+
+# 3. User Inputs
 The "User inputs" section at the top contains all the required inputs to set up the table. You can select:
 
 ## Top Level Filter
@@ -25,7 +31,4 @@ Here you can add buttons. The buttons are second-level filters you use often. Th
 
 const buttons = [['button1_name', 'button1_tag'], ['button2_name', 'button2_tag']]
 
-# Setup
-1. Copy paste everything inside the "START OF DYNAMIC TABLE" and "END OF DYNAMIC TABLE" comments
-2. Define your user inputs
-2. Enter and delete a random search (this will create a metadata field required for the table in your note. Before doing this the table won't render)
+
