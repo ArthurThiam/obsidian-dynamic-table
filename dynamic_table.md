@@ -31,6 +31,10 @@ const columns_metadata = ["quantity", "connection", "topic", "source", "lead", "
 // Titles of the columns for the above listed metadata
 const columns_titles = ["Quantity", "Connection Details", "Purpose", "Source", "Lead Time", "URL"]
 
+// Sorting Options
+const sort_name = "quantity" // should match an entry from columns_titles defined above. Can additionally select "File" to sort on filename.
+const sort_order = "asc" // asc = ascending, desc = descending
+
 // Buttons to include. These are a second layer of filters, for the moment only search for tags. They can be made to search for file names too, this will be made easier in a future version.
 // Format: const buttonX = ['button-name', 'tag (excluding hashtag)']
 const buttons = [['Sensors', 'project/thesis/component/sensor'], ['Connectors', 'project/thesis/component/connector']]
@@ -113,14 +117,27 @@ for (const p of dv.pages(top_level_filter)) {
 		} // filter match if-statement close (everything above this is repeated for each note)	
 	} // top level for loop close
 
-// Build Tabl
+// Add file name and todo status (if desired)
 columns_titles.unshift('File')
 if(dv.current().include_todo){
 	columns_titles.push("Status")
 }
 
+// Sort data based on user inputs
+const sort_index = columns_titles.indexOf(sort_name)
+
+if (sort_order == "asc"){
+	table_data.sort((a, b) => b[sort_index] - a[sort_index])
+} else if (sort_order == "desc"){
+	table_data.sort((a, b) => a[sort_index] - b[sort_index])
+} else {
+	dv.paragraph("Invalid sort settings")
+}
+
+// Build Tabke
 dv.table(columns_titles, table_data.reverse())
 
+// Render content of unchecked todo's if desired
 if (dv.current().list_todos) {
 	dv.paragraph("## Incomplete Tasks")
 	for (let i = 0; i < todo_contents.length; i++) {
