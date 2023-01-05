@@ -10,7 +10,7 @@ Dynamic table for Obsidian
 1. Copy paste everything inside the "START OF DYNAMIC TABLE" and "END OF DYNAMIC TABLE" comments
 2. Define your user inputs (see explanations below)
 3. Enter and delete a random search (this will create a metadata field required for the table in your note. The table won't render before doing this step)
-4. Click the "All" button to initialize the button filter variable (this will write to the inline field below your table. Feel free to place this inline field anywhere in the note. The table won't render before doing this step)
+4. Click the "All" button to initialize the button filter variable. Select sorting options to initialize sorting related vaiarbles (this will write to the inline fields below your table. Feel free to place these anywhere in the note. The table won't render before doing this step)
 
 # 3. User Inputs
 The "User inputs" section at the top contains all the required inputs to set up the table. You can select:
