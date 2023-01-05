@@ -23,21 +23,20 @@
 // ================================================================================== USER INPUTS ===============================================================================
 
 // Tag filter, the table will loop through all notes with this tag (include hashtag)
-const top_level_filter = "#project/thesis/component"
+const top_level_filter = "#area/finance/personal/entry"
 
 // Metadata to include in the table
-const columns_metadata = ["quantity", "connection", "topic", "source", "lead", "url"]
+const columns_metadata = ["cashflow", "status", "calculate", "date","url"]
 
 // Titles of the columns for the above listed metadata
-const columns_titles = ["Quantity", "Connection Details", "Purpose", "Source", "Lead Time", "URL"]
-
-// Sorting Options
-const sort_name = "quantity" // should match an entry from columns_titles defined above. Can additionally select "File" to sort on filename.
-const sort_order = "asc" // asc = ascending, desc = descending
+const columns_titles =  ["Cashflow [€]", "Status", "Effective cashflow [€]", "Expected on","Url/Comment"]
 
 // Buttons to include. These are a second layer of filters, for the moment only search for tags. They can be made to search for file names too, this will be made easier in a future version.
 // Format: const buttonX = ['button-name', 'tag (excluding hashtag)']
-const buttons = [['Sensors', 'project/thesis/component/sensor'], ['Connectors', 'project/thesis/component/connector']]
+const buttons = [['Inflows', 'area/finance/personal/entry/inflow'],
+				 ['Outflows', 'area/finance/personal/entry/outflow'],
+				 ['Reserves', 'area/finance/personal/entry/reserve'],
+				 ['Savings', 'area/finance/personal/entry/saving']]
 
 
 // ================================================================== BUILD BUTTONS =================================================================
@@ -82,6 +81,12 @@ for (const p of dv.pages(top_level_filter)) {
 			// loop through desired columns and add metadata value to file data
 			for(let i = 0; i < columns_metadata.length; i ++) {
 				file_data.push(p[columns_metadata[i]])
+
+				// Replace with calculation for the effective cashflow
+				if (columns_metadata[i] == "calculate"){
+					file_data.pop()
+					file_data.push(p.status * p.cashflow)
+				}
 			}
 
 
@@ -124,18 +129,31 @@ if(dv.current().include_todo){
 }
 
 // Sort data based on user inputs
-const sort_index = columns_titles.indexOf(sort_name)
+const sort_index = columns_titles.indexOf(dv.current().sort_name)
 
-if (sort_order == "asc"){
-	table_data.sort((a, b) => b[sort_index] - a[sort_index])
-} else if (sort_order == "desc"){
-	table_data.sort((a, b) => a[sort_index] - b[sort_index])
-} else {
+if (dv.current().sort_order == "Ascending"){
+		table_data.sort((a, b) => b[sort_index] - a[sort_index])
+		
+	} else if (dv.current().sort_order == "Descending"){
+		table_data.sort((a, b) => a[sort_index] - b[sort_index])
+	
+	} else {
 	dv.paragraph("Invalid sort settings")
 }
 
-// Build Tabke
+// Build Table
 dv.table(columns_titles, table_data.reverse())
+
+// Render buttons for sorting options
+dv.paragraph("Sort by:")
+for (let i = 0; i < columns_titles.length; i++){
+	createButton({app, el: this.container, args: {name: columns_titles[i]}, clickOverride: {click: update, params: ['sort_name', columns_titles[i], file]}});
+}
+dv.paragraph('')
+
+// Render buttons for sorting order
+createButton({app, el: this.container, args: {name: "Ascending"}, clickOverride: {click: update, params: ['sort_order', "Ascending", file]}});
+createButton({app, el: this.container, args: {name: "Descending"}, clickOverride: {click: update, params: ['sort_order', "Descending", file]}});
 
 // Render content of unchecked todo's if desired
 if (dv.current().list_todos) {
@@ -146,5 +164,10 @@ if (dv.current().list_todos) {
 	}
 }
 ```
-filter::
+---
+filter:: area/finance/personal/entry/outflow
+sort_name:: Effective cashflow [€]
+sort_order:: Descending
+
+---
 %% ======================================================================END OF DYNAMIC TABLE====================================================================== %%
