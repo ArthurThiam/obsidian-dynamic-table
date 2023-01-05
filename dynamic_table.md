@@ -26,7 +26,7 @@
 const top_level_filter = "#area/finance/personal/entry"
 
 // Metadata to include in the table
-const columns_metadata = ["cashflow", "status", "calculate", "date","url"]
+const columns_metadata = ["cashflow", "status", "calculate", "date","url"] //for notes of format <YYYY-MM-DD - note_name>, adding file.day will render the date in the column
 
 // Titles of the columns for the above listed metadata
 const columns_titles =  ["Cashflow [€]", "Status", "Effective cashflow [€]", "Expected on","Url/Comment"]
@@ -82,10 +82,9 @@ for (const p of dv.pages(top_level_filter)) {
 			for(let i = 0; i < columns_metadata.length; i ++) {
 				file_data.push(p[columns_metadata[i]])
 
-				// Replace with calculation for the effective cashflow
-				if (columns_metadata[i] == "calculate"){
-					file_data.pop()
-					file_data.push(p.status * p.cashflow)
+				// Work-around for file date
+				if (columns_metadata[i]=="file.day"){
+					file_data[file_data.length - 1] = p.file.day
 				}
 			}
 
