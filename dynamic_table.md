@@ -74,7 +74,7 @@ async function extract_content(file){
 
 //Loop through all notes
 for (const p of dv.pages(top_level_filter)) {
-		if ((p.file.name.includes(internal_search) || (await extract_content(p)).includes(internal_search))) {
+		if (p.file.tags[0].match(dv.current().filter) && (p.file.name.includes(internal_search) || (await extract_content(p)).includes(internal_search))) {
 			let file_data = []
 			file_data.push("[[" + p.file.name + "]]")
 
