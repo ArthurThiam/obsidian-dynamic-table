@@ -23,21 +23,37 @@
 // ================================================================================== USER INPUTS ===============================================================================
 
 // Tag filter, the table will loop through all notes with this tag (include hashtag)
-const top_level_filter = "#area/finance/personal/entry"
+const top_level_filter = "#people"
 
 // Metadata to include in the table
-const columns_metadata = ["cashflow", "status", "calculate", "date","url"] //for notes of format <YYYY-MM-DD - note_name>, adding file.day will render the date in the column
+const columns_metadata = ["tag"] //for notes of format <YYYY-MM-DD - note_name>, adding file.day will render the date in the column
 
 // Titles of the columns for the above listed metadata
-const columns_titles =  ["Cashflow [€]", "Status", "Effective cashflow [€]", "Expected on","Url/Comment"]
+const columns_titles =  ["Author Category"]
 
-// Buttons to include. These are a second layer of filters, for the moment only search for tags. They can be made to search for file names too, this will be made easier in a future version.
-// Format: const buttonX = ['button-name', 'tag (excluding hashtag)']
-const buttons = [['Inflows', 'area/finance/personal/entry/inflow'],
-				 ['Outflows', 'area/finance/personal/entry/outflow'],
-				 ['Reserves', 'area/finance/personal/entry/reserve'],
-				 ['Savings', 'area/finance/personal/entry/saving']]
+// Pull author categories
+var category_buttons = []
+var categories_log = []
 
+const categories_data = dv.pages(top_level_filter)
+	.forEach(p => {
+		if ((p.file.tags[0].includes('/'))) {
+			//pull category
+			var tag_id = p.file.tags[0]
+			var category = p.file.tags[0].substring(8)
+			
+			category.replace("_", " ")
+			category.replace("_", " ")
+			category.replace("_", " ")
+			category.replace("_", " ")
+			
+			//Add category if it doesn't already exist, then add quote as first element
+			if (!categories_log.includes(category)){
+				categories_log.push(category)
+				category_buttons.push([category, tag_id.substring(1)])
+			}
+		}
+	})
 
 // ================================================================== BUILD BUTTONS =================================================================
 const {update} = this.app.plugins.plugins["metaedit"].api
@@ -49,8 +65,8 @@ dv.paragraph('')
 createButton({app, el: this.container, args: {name: "All"}, clickOverride: {click: update, params: ['filter', top_level_filter.slice(1), file]}});
 
 // Custom buttons
-for (let i = 0; i < buttons.length; i++){
-	createButton({app, el: this.container, args: {name: buttons[i][0]}, clickOverride: {click: update, params: ['filter', buttons[i][1], file]}});
+for (let i = 0; i < category_buttons.length; i++){
+	createButton({app, el: this.container, args: {name: category_buttons[i][0]}, clickOverride: {click: update, params: ['filter', category_buttons[i][1], file]}});
 }
 
 // =================================================================================================================================================================================
@@ -81,13 +97,7 @@ for (const p of dv.pages(top_level_filter)) {
 			// loop through desired columns and add metadata value to file data
 			for(let i = 0; i < columns_metadata.length; i ++) {
 				file_data.push(p[columns_metadata[i]])
-
-				// Work-around for file date
-				if (columns_metadata[i]=="file.day"){
-					file_data[file_data.length - 1] = p.file.day
-				}
 			}
-
 
 			// Check if todos are complete or not. Add to table depending on if you only want incomplete tasks to show
 			if (p.file.tasks.completed.includes(false)) {
@@ -163,10 +173,8 @@ if (dv.current().list_todos) {
 	}
 }
 ```
----
-filter:: area/finance/personal/entry/outflow
+##### Inline Fields
+filter:: people
 sort_name:: Effective cashflow [€]
 sort_order:: Descending
-
----
 %% ======================================================================END OF DYNAMIC TABLE====================================================================== %%
