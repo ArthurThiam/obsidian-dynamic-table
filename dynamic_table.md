@@ -40,12 +40,8 @@ const categories_data = dv.pages(top_level_filter)
 		if ((p.file.tags[0].includes('/'))) {
 			//pull category
 			var tag_id = p.file.tags[0]
-			var category = p.file.tags[0].substring(8)
-			
-			category.replace("_", " ")
-			category.replace("_", " ")
-			category.replace("_", " ")
-			category.replace("_", " ")
+			var category_temp = p.file.tags[0].substring(8).replace("_", " ").replace("_", " ").replace("_", " ")
+			var category = category_temp[0].toUpperCase() + category_temp.substring(1)
 			
 			//Add category if it doesn't already exist, then add quote as first element
 			if (!categories_log.includes(category)){
